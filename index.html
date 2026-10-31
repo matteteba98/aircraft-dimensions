@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aircraft Dimensions</title>
+<style>
+:root {
+  --navy:#10283f;
+  --blue:#176b9b;
+  --bg:#f2f5f8;
+  --muted:#64748b;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:#172b3d;
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:30px 20px 38px;
+}
+.container {
+  max-width:1050px;
+  margin:auto;
+}
+.brand {
+  font-size:23px;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+.brand span { color:#65c8f2; }
+.subtitle { color:#bfd0df; font-size:13px; }
+.hero { padding:35px 0 12px; }
+.hero h1 { font-size:32px; margin:0 0 12px; }
+.hero p { color:#d3e1ed; }
+.search {
+  display:flex;
+  gap:10px;
+  margin-top:25px;
+}
+input,select {
+  width:100%;
+  padding:15px;
+  border:1px solid #d5dfe8;
+  border-radius:9px;
+  font-size:15px;
+  background:white;
+}
+.search input { flex:1; }
+main {
+  max-width:1050px;
+  margin:25px auto;
+  padding:0 16px;
+}
+.filters {
+  display:flex;
+  gap:12px;
+  margin-bottom:22px;
+}
+.filters select { max-width:240px; }
+.results {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:17px;
+}
+.card {
+  background:white;
+  border:1px solid #e0e7ed;
+  border-radius:13px;
+  padding:20px;
+  box-shadow:0 3px 12px #172b3d08;
+}
+.tag {
+  display:inline-block;
+  padding:5px 9px;
+  background:#e7f3fa;
+  color:#176b9b;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+}
+.card h2 { font-size:20px; margin:14px 0 5px; }
+.manufacturer { color:var(--muted); font-size:13px; }
+.dimensions {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:20px 0;
+}
+.dimension {
+  background:#f1f5f8;
+  padding:13px;
+  border-radius:9px;
+}
+.dimension small {
+  display:block;
+  color:var(--muted);
+  margin-bottom:7px;
+}
+.dimension strong { font-size:21px; }
+.extra { font-size:13px; line-height:1.8; }
+.source {
+  display:inline-block;
+  margin-top:12px;
+  color:#176b9b;
+  font-size:12px;
+}
+.notice {
+  background:#fff8e8;
+  padding:12px;
+  border-radius:8px;
+  font-size:12px;
+  color:#79551c;
+  margin-top:12px;
+}
+.empty {
+  grid-column:1/-1;
+  text-align:center;
+  padding:40px 15px;
+  color:var(--muted);
+}
+footer {
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-size:12px;
+}
+@media(max-width:600px) {
+  .hero h1 { font-size:25px; }
+  .search,.filters { flex-direction:column; }
+  .filters select { max-width:none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="brand">✈ AIRCRAFT <span>DIMENSIONS</span></div>
+    <div class="subtitle">THE AIRCRAFT SPECIFICATIONS DATABASE</div>
+    <div class="hero">
+      <h1>Scopri le dimensioni di ogni aeromobile.</h1>
+      <p>Cerca un modello e consulta le sue caratteristiche dimensionali.</p>
+      <div class="search">
+        <input id="search" type="search"
+          placeholder="Es. Airbus A320, Boeing 737, F-16..."
+          aria-label="Cerca aeromobile">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="filters">
+    <select id="category">
+      <option value="">Tutte le categorie</option>
+      <option value="Aereo di linea">Aerei di linea</option>
+      <option value="Militare">Militari</option>
+      <option value="Privato">Aerei privati</option>
+      <option value="Elicottero">Elicotteri</option>
+      <option value="Cargo">Cargo</option>
+    </select>
+    <select id="sort">
+      <option value="name">Ordina per nome</option>
+      <option value="length">Lunghezza decrescente</option>
+      <option value="wingspan">Apertura alare decrescente</option>
+    </select>
+  </div>
+
+  <p id="count"></p>
+  <section class="results" id="results"></section>
+</main>
+
+<footer>
+  AIRCRAFT DIMENSIONS · Database in evoluzione<br>
+  Le misure sono espresse in metri. Verificare sempre la variante.
+</footer>
+
+<script>
+const aircraft = [
+  {
+    name:"A320-200",
+    manufacturer:"Airbus",
+    category:"Aereo di linea",
+    length:37.57,
+    wingspan:35.80,
+    height:11.76,
+    source:"https://www.airbus.com/"
+  },
+  {
+    name:"A321-200",
+    manufacturer:"Airbus",
+    category:"Aereo di linea",
+    length:44.51,
+    wingspan:35.80,
+    height:11.76,
+    source:"https://www.airbus.com/"
+  },
+  {
+    name:"737-800",
+    manufacturer:"Boeing",
+    category:"Aereo di linea",
+    length:39.47,
+    wingspan:35.79,
+    height:12.55,
+    source:"https://www.boeing.com/"
+  },
+  {
+    name:"747-8",
+    manufacturer:"Boeing",
+    category:"Aereo di linea",
+    length:76.25,
+    wingspan:68.40,
+    height:19.35,
+    source:"https://www.boeing.com/"
+  }
+];
+
+const results = document.getElementById("results");
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+const sort = document.getElementById("sort");
+
+function dimension(value) {
+  return Number.isFinite(value)
+    ? value.toFixed(2).replace(".",",")+" m"
+    : "Non disponibile";
+}
+
+function render() {
+  const term = search.value.toLowerCase().trim();
+  const selected = category.value;
+
+  let filtered = aircraft.filter(a =>
+    (a.name+" "+a.manufacturer+" "+a.category)
+      .toLowerCase().includes(term) &&
+    (!selected || a.category===selected)
+  );
+
+  if(sort.value==="length")
+    filtered.sort((a,b)=>(b.length||0)-(a.length||0));
+  else if(sort.value==="wingspan")
+    filtered.sort((a,b)=>(b.wingspan||0)-(a.wingspan||0));
+  else
+    filtered.sort((a,b)=>a.name.localeCompare(b.name));
+
+  document.getElementById("count").textContent =
+    filtered.length+" aeromobili trovati";
+
+  results.innerHTML="";
+
+  if(!filtered.length) {
+    results.innerHTML='<div class="empty">Nessun aeromobile trovato. Prova un altro nome.</div>';
+    return;
+  }
+
+  filtered.forEach(a=>{
+    const card=document.createElement("article");
+    card.className="card";
+
+    const title=document.createElement("h2");
+    title.textContent=a.name;
+
+    const manufacturer=document.createElement("div");
+    manufacturer.className="manufacturer";
+    manufacturer.textContent=a.manufacturer;
+
+    const tag=document.createElement("span");
+    tag.className="tag";
+    tag.textContent=a.category;
+
+    const dimensions=document.createElement("div");
+    dimensions.className="dimensions";
+
+    [
+      ["LUNGHEZZA",a.length],
+      ["APERTURA ALARE",a.wingspan],
+      ["ALTEZZA",a.height]
+    ].forEach(([label,value])=>{
+      const item=document.createElement("div");
+      item.className="dimension";
+      const small=document.createElement("small");
+      small.textContent=label;
+      const strong=document.createElement("strong");
+      strong.textContent=dimension(value);
+      item.append(small,strong);
+      dimensions.append(item);
+    });
+
+    const source=document.createElement("a");
+    source.className="source";
+    source.href=a.source;
+    source.target="_blank";
+    source.rel="noopener noreferrer";
+    source.textContent="Consulta il sito del costruttore ↗";
+
+    card.append(tag,title,manufacturer,dimensions,source);
+    results.append(card);
+  });
+}
+
+search.addEventListener("input",render);
+category.addEventListener("change",render);
+sort.addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
